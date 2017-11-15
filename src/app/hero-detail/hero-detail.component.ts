@@ -1,4 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { HeroService } from '../hero.service';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Hero } from '../models/Hero';
+import { Location } from '@angular/common';
+import 'rxjs/add/operator/switchMap';
 
 @Component({
   selector: 'app-hero-detail',
@@ -8,9 +13,25 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class HeroDetailComponent implements OnInit {
 
-  constructor() { }
+  hero: Hero;
 
-  ngOnInit() {
+  constructor(
+    private heroService: HeroService,
+    private route: ActivatedRoute,
+    private location: Location) { }
+
+  ngOnInit(): void {
+    this.getHero();
+  }
+
+  getHero(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.heroService.getHero(id)
+      .subscribe(hero => this.hero = hero);
+  }
+
+  navigateBack(): void {
+    this.location.back();
   }
 
 }
